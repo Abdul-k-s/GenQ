@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>GenQ BOQ Generator</Name>
+    <Assembly>GenQ\GenQ.dll</Assembly>
+    <AddInId>4D664168-4279-4ECC-A8A6-58B43EC3518F</AddInId>
+    <FullClassName>GenQ.Apps</FullClassName>
+    <Text>Generate BOQ</Text>
+    <Description>Bill of Quantities Generator for Autodesk Revit 2025. Creates quantity takeoffs from Revit models with CSI MasterFormat integration and Excel export.</Description>
+    <VendorId>ITI-GENQ</VendorId>
+    <VendorDescription>ITI - GenQ Development Team</VendorDescription>
+  </AddIn>
+</RevitAddIns>

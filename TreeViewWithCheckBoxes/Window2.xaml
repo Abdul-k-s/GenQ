@@ -1,0 +1,422 @@
+﻿<Window x:Class="GenQ.Window2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GenQ"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:dw="clr-namespace:DrWPF.Windows.Controls"
+        Icon="Resources\GenQLogo.ico"
+        mc:Ignorable="d"
+        Title="GenQ" ResizeMode="CanResizeWithGrip" SizeToContent="Width" MinHeight="550" MinWidth="1270" MaxHeight="1000" >
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            
+            <ObjectDataProvider x:Key="UnitEnum" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="local:UnitTypeEnum"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <local:UnitEnumConverter x:Key="UnitEnumConverter"/>
+
+
+            <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="True" />
+                <Setter Property="IsSelected" Value="{Binding IsInitiallySelected, Mode=OneTime}" />
+                <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
+                <Setter Property="dw:VirtualToggleButton.IsVirtualToggleButton" Value="True" />
+                <Setter Property="dw:VirtualToggleButton.IsChecked" Value="{Binding IsChecked}" />
+            </Style>
+
+
+            <HierarchicalDataTemplate 
+        x:Key="CheckBoxItemTemplate"
+        ItemsSource="{Binding Children, Mode=OneTime}"
+        >
+                <StackPanel Orientation="Horizontal">
+                    <!-- These elements are bound to a FooViewModel object. -->
+                    <CheckBox
+            Focusable="False" 
+            IsChecked="{Binding IsChecked , Mode=TwoWay}" 
+            VerticalAlignment="Center"
+            />
+
+                    <ContentPresenter 
+            Content="{Binding Name, Mode=OneTime}" 
+            Margin="2,0"
+            />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <DataTemplate
+        x:Key="AbdallahTemplate">
+                <Border  CornerRadius="5" BorderBrush="#AECAE9" BorderThickness="2" Margin="0 0 0 0">
+                    <Expander  Header="{Binding Name}" IsExpanded="True" Background="#D7DBDD" BorderThickness="0 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 0 0" MinWidth="900" >
+                        <Border BorderBrush="#5F6A6A" BorderThickness="0 1 0 0">
+
+                            <StackPanel Orientation="Horizontal" Background="#D7DBDD" >
+
+                                <Separator Width="20" Visibility="Hidden"/>
+                                <Label Grid.Column="1" Height="30" Content="Unit:"   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+
+
+                                <ComboBox ItemsSource="{Binding Source={StaticResource UnitEnum}, Converter={StaticResource UnitEnumConverter}}" 
+                                  SelectedValuePath="Key" DisplayMemberPath="Value"
+                                  SelectedValue="{Binding Path=UnitType, Mode=TwoWay}" Width="80" Height="20" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+
+                                <Separator Width="5" Visibility="Hidden"/>
+                                <Label Grid.Column="1" Height="30" Content="Division:"    HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="Div" ItemsSource="{Binding Master , RelativeSource={RelativeSource AncestorType=Window}}" 
+                                  SelectedValue="{Binding Path=Division, Mode=TwoWay}" Width="80" Height="20" VerticalContentAlignment="Center" VerticalAlignment="Center">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+
+                                            <StackPanel  Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Section}" Width="50" />
+                                                <TextBlock Text="{Binding Name}" Width="350"/>
+                                            </StackPanel>
+
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                                <Separator Width="5" Visibility="Hidden"/>
+                                <Label Grid.Column="1" Height="30" Content="Section:"   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <ComboBox ItemsSource="{Binding SelectedValue.Children , ElementName=Div}"
+                                  SelectedValue="{Binding Path=Section, Mode=TwoWay}" Width="80" Height="20" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                                           >
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Section}" Width="50" />
+                                                <TextBlock Text="{Binding Name}" Width="350"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                                <Separator Width="5" Visibility="Hidden"/>
+                                <Label Grid.Column="1"  Height="30" Content="Rate:"    HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <TextBox PreviewTextInput="PreviewTextInput" DataObject.Pasting="TextBoxPasting" VerticalContentAlignment="Center" Text="{Binding Cost, Mode=TwoWay}"
+                                       Margin="2,0" Width="45" Height="20" VerticalAlignment="Center"/>
+
+                                <Separator Width="5" Visibility="Hidden"/>
+                                <Label Grid.Column="1" Height="30" Content="Description:"   HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                <TextBox  Text = "{Binding Path=Description, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged , NotifyOnSourceUpdated=True}"  
+                                       Margin="2,0"  VerticalAlignment="Center" Width="300" TextWrapping="Wrap" AcceptsReturn="True" >
+
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}">
+                                            <Setter Property="Height" Value="20" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Height" Value="40" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelectionActive" Value="True">
+                                                    <Setter Property="Height" Value="80" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                            </StackPanel>
+                        </Border>
+                    </Expander>
+                </Border>
+
+            </DataTemplate>
+
+            <Style
+        x:Key="ButtonFocusVisual">
+                <Setter
+            Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MetroButton" TargetType="{x:Type Button}">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+                <Setter Property="Background" Value="#ADADAD"/>
+                <Setter Property="Foreground" Value="#7F8C8D"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="10 5"/>
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BorderThickness" Value="2" />
+
+                <Setter Property="Template">
+
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Grid>
+                                <Border
+                                x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="10">
+
+                                </Border>
+
+                                <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="OpacityMask" Value="#AA888888"/>
+                                    <Setter Property="Margin" Value="2 1" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <!--<Setter Property="Background" Value="DimGray"/>-->
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="#ADADAD"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="TextBoxx" TargetType="{x:Type RichTextBox}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RichTextBox}">
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Width" Value="300"/>
+                                    <Setter Property="Height" Value="300"/>
+
+                                    <!--<Setter Property="Background" Value="DimGray"/>-->
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Foreground" Value="#ADADAD"/>
+                                    <Setter Property="Width" Value="400"/>
+                                    <Setter Property="Height" Value="400"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border CornerRadius="30">
+
+        <Grid  Background="#5F6A6A">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="240" Width="*"/>
+                <ColumnDefinition Width="2.5*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0"  >
+                <Grid.RowDefinitions>
+                    <RowDefinition  Height="30"/>
+                    <RowDefinition Height="*"/>
+
+                </Grid.RowDefinitions>
+                <Grid Margin="0 5 0 0" Grid.Row="0"  >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="105"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Filter By Level" Foreground="#ededed" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Border Grid.Column="1" Margin="10 0 0 2" Padding="2" BorderThickness="1.2" Background="#ededed" BorderBrush="#424949" CornerRadius="4">
+                        <ComboBox x:Name="Levels" BorderThickness="0" HorizontalAlignment="Stretch" Height="15" Background="#ededed" Padding="1 0 0 0" Grid.Row="0">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox Click="Levels_Selected" IsChecked="{Binding IsChecked}"
+                                             Width="20" />
+                                        <TextBlock Text="{Binding Name}"
+                                             Width="100" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Border>
+                    <CheckBox x:Name="IncludeLinks" Click="IncludeLinks_Click" Grid.Column="2" Foreground="#ededed" Content="Include links" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Height="15" Width="80"/>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="0 0 0 0" >
+                    <!--<ComboBox Margin="0 0 10 5" Name="Groupby" SelectedIndex="0"  Background="White"  />-->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="58"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="57"/>
+                    </Grid.RowDefinitions>
+                    <Border BorderBrush="#424949" Background="#D7DBDD" Padding="2 2 2 2" Margin="5 0 5 0" CornerRadius="6 6 0 0" BorderThickness="2 2 2 1" Grid.Row="0"  HorizontalAlignment="Stretch">
+
+                        <TreeView Grid.Row="1" Background="#D7DBDD" BorderThickness="0"  x:Name="tree" ItemContainerStyle="{StaticResource TreeViewItemStyle}" ItemTemplate="{StaticResource CheckBoxItemTemplate}"/>
+                    </Border>
+
+                    <Border Background="#D7DBDD"  Margin="5 0 5 0" VerticalAlignment="Top" CornerRadius="0 0 6 6" BorderBrush="#424949" BorderThickness="1.5 0 1.5 1.5" Height="50" Grid.Row="1" HorizontalAlignment="Stretch"  >
+                        <Grid Width="auto">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button Click="CheckAll" BorderThickness="1" BorderBrush="#424445" Foreground="#D7DBDD" Background="#7F8C8D" FontSize="10" Style="{StaticResource MetroButton}" Content="Check all" HorizontalAlignment="Right" Margin="0 0 10 0"  VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"  Width="70"/>
+                            <Button Click="UnCheckAll" BorderThickness="1" BorderBrush="#424445" Foreground="#D7DBDD" Background="#7F8C8D" FontSize="10" Style="{StaticResource MetroButton}" Content="Uncheck all" HorizontalAlignment="Left" Margin="10 0 0 0"  VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" Width="70"/>
+                        </Grid>
+                    </Border>
+
+
+                    <Border Background="#D7DBDD" CornerRadius="6" BorderBrush="#424949" BorderThickness="1.5" VerticalAlignment="Top" Height="50" Grid.Row="3" HorizontalAlignment="Stretch"  Margin="5 0 5 0">
+                        <Grid Margin="0 0 0 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+
+                                </Grid.ColumnDefinitions>
+                                <Button BorderThickness="1" BorderBrush="#424445" Foreground="#D7DBDD" Background="#7F8C8D" Click="OK_Button" FontSize="10"  Style="{StaticResource MetroButton}"  Content="Select" HorizontalAlignment="Right" Margin="0 0 10 0"  VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Width="70"/>
+                                <Button BorderThickness="1" BorderBrush="#424445" Foreground="#D7DBDD" Background="#7F8C8D" FontSize="10" 
+                                        Style="{StaticResource MetroButton}" Content="Export" HorizontalAlignment="Left" Margin="10 0 0 0"  
+                                        VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" Width="70" Click="Export_Button"/>
+                            </Grid>
+
+                            <!--<Button BorderThickness="1" BorderBrush="#424445" Foreground="#D7DBDD" Background="#7F8C8D" Click="Button_Click_1" FontSize="10" Style="{StaticResource MetroButton}" Content="Generate BOQ" HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="1" Margin="0 0 0 0" Width="100"/>-->
+
+
+
+
+                        </Grid>
+                    </Border >
+                </Grid>
+
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+
+                </Grid.RowDefinitions>
+
+                <Button Grid.Column="1" Grid.Row="0" Click="To_Revit_Button" BorderThickness="1.5" BorderBrush="#424949" Foreground="#D7DBDD" Background="#7F8C8D" FontSize="10" Style="{StaticResource MetroButton}" Content="Save To Revit" HorizontalAlignment="Right" Margin="0 0 32 0"  VerticalAlignment="Center"  Width="100"/>
+                <Button Grid.Column="1" Grid.Row="0" Click="From_Revit_Button" BorderThickness="1.5" BorderBrush="#424949" Foreground="#D7DBDD" Background="#7F8C8D"  FontSize="10" Style="{StaticResource MetroButton}" Content="Import From Revit" HorizontalAlignment="Right" Margin="0 0 137 0"  VerticalAlignment="Center" Width="100"/>
+
+
+                <Border  Name="mypanel" Grid.Row="1" Padding="2" Background="#D7DBDD" BorderBrush="#424949" BorderThickness="1.5" Margin="0 0 6 7" CornerRadius="7">
+                    <ScrollViewer Name="ScrollContainer" Grid.Column="1" Height="{Binding ElementName=mypanel, Path=ActualHeight}">
+                        <ListView  PreviewMouseWheel="checkedtree_PreviewMouseWheel"  Padding="1" Grid.Column="1"  BorderThickness="0"  Background="#D7DBDD" VerticalAlignment="Stretch" x:Name="checkedtree" >
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Expander Header="{Binding Name}" IsExpanded="True">
+
+                                        <StackPanel>
+                                            <Separator Height="5" Visibility="Hidden"/>
+                                            <Expander Header="Apply to all"  IsExpanded="True" Background="#D7DBDD" BorderThickness="0 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 0 0" MinWidth="900" >
+                                                <Border BorderBrush="#5F6A6A" BorderThickness="0 1 0 0">
+
+                                                    <StackPanel Orientation="Horizontal" Background="#D7DBDD" >
+
+                                                        <Separator Width="30" Visibility="Hidden"/>
+                                                        <Label Grid.Column="1" Height="30" Content="Unit:"   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+
+
+                                                        <ComboBox ItemsSource="{Binding Source={StaticResource UnitEnum}, Converter={StaticResource UnitEnumConverter}}" 
+                                  SelectedValuePath="Key" DisplayMemberPath="Value"
+                                  SelectedValue="{Binding Path=UnitType, Mode=TwoWay}" Width="80" Height="20" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+
+                                                        <Separator Width="5" Visibility="Hidden"/>
+                                                        <Label Grid.Column="1" Height="30" Content="Division:"    HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                                                        <ComboBox x:Name="Div" ItemsSource="{Binding Master , RelativeSource={RelativeSource AncestorType=Window}}" 
+                                  SelectedValue="{Binding Path=Division, Mode=TwoWay}" Width="80" Height="20" VerticalContentAlignment="Center" VerticalAlignment="Center">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="{Binding Section}" Width="50" />
+                                                                        <TextBlock Text="{Binding Name}" Width="350"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </ComboBox>
+
+                                                        <Separator Width="5" Visibility="Hidden"/>
+                                                        <Label Grid.Column="1" Height="30" Content="Section:"   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                        <ComboBox ItemsSource="{Binding SelectedValue.Children , ElementName=Div}"
+                                  SelectedValue="{Binding Path=Section, Mode=TwoWay}" Width="80" Height="20" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                                           >
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="{Binding Section}" Width="50" />
+                                                                        <TextBlock Text="{Binding Name}" Width="350"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </ComboBox>
+
+                                                        <Separator Width="5" Visibility="Hidden"/>
+                                                        <Label Grid.Column="1"  Height="30" Content="Rate:"    HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                        <TextBox PreviewTextInput="PreviewTextInput" DataObject.Pasting="TextBoxPasting" VerticalContentAlignment="Center" Text="{Binding Path=Cost, Mode=TwoWay}"
+                                       Margin="2,0" Width="45" Height="20" VerticalAlignment="Center"/>
+
+                                                        <Separator Width="5" Visibility="Hidden"/>
+                                                        <Label Grid.Column="1" Height="30" Content="Description:"   HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                                        <TextBox   Text = "{Binding Path=Description, Mode=TwoWay}"  
+                                       Margin="2,0"  VerticalAlignment="Center" Width="300" TextWrapping="Wrap" AcceptsReturn="True" >
+
+                                                            <TextBox.Style>
+                                                                <Style TargetType="{x:Type TextBox}">
+                                                                    <Setter Property="Height" Value="20" />
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Height" Value="40" />
+                                                                        </Trigger>
+                                                                        <Trigger Property="IsSelectionActive" Value="True">
+                                                                            <Setter Property="Height" Value="80" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBox.Style>
+                                                        </TextBox>
+
+                                                    </StackPanel>
+                                                </Border>
+                                            </Expander>
+
+
+                                            <Border  Background="#5F6A6A" BorderBrush="#5F6A6A" BorderThickness="2" CornerRadius="7">
+                                                <ListView Margin="1 1 1 1" BorderThickness="0" Padding="0" Background="#5F6A6A" ItemsSource="{Binding Children}" ItemTemplate="{StaticResource AbdallahTemplate}">
+                                                </ListView>
+                                            </Border>
+                                        </StackPanel>
+                                    </Expander>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+
+</Window>
+
+
