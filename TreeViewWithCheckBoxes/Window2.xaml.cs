@@ -1,10 +1,12 @@
 ﻿using Autodesk.Revit.DB;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
-
 using System.Windows.Input;
+using GenQ.Data;
+using GenQ.Views;
 
 
 
@@ -80,6 +82,18 @@ namespace GenQ
         public void OK_Button(object sender, RoutedEventArgs e)
         {
             Selected = GetSelected();
+            
+            // Show export buttons if selection is valid
+            if (Selected.Count > 0)
+            {
+                btnExport.Visibility = System.Windows.Visibility.Visible;
+                btnSqlExport.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                btnExport.Visibility = System.Windows.Visibility.Collapsed;
+                btnSqlExport.Visibility = System.Windows.Visibility.Collapsed;
+            }
         }
 
         public List<FooViewModel> GetSelected()
@@ -395,6 +409,118 @@ namespace GenQ
                     PreviewWindow previewWindow = new PreviewWindow(doc, Sorted);
                     previewWindow.ShowDialog();
                 }
+            }
+        }
+
+        private void SqlExport_Button(object sender, RoutedEventArgs e)
+        {
+            // First validate selection
+            Selected = GetSelected();
+            List<string> selectedLevels = SelectedLevels(lvls);
+            bool allokay = true;
+            
+            if (Selected.Count == 0)
+            {
+                MessageBox.Show("Please select types to export.");
+                return;
+            }
+            
+            foreach (FooViewModel T in Selected)
+            {
+                if (T.Division == null)
+                {
+                    MessageBox.Show($"Select Division For Type {T.Name}");
+                    allokay = false;
+                    break;
+                }
+                if (T.Section == null)
+                {
+                    MessageBox.Show($"Select Section For Type {T.Name}");
+                    allokay = false;
+                    break;
+                }
+                if (T.UnitType == UnitTypeEnum.None)
+                {
+                    MessageBox.Show($"Select UnitType For Type {T.Name}");
+                    allokay = false;
+                    break;
+                }
+            }
+            
+            if (!allokay) return;
+
+            // Show connection settings dialog
+            var connectionDialog = new SqlConnectionDialog(this);
+            if (connectionDialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                // Process and export to SQL
+                BOQ_Generator Bo = new BOQ_Generator();
+                List<FooViewModel> Sorted = Bo.Sort(Selected, selectedLevels);
+                
+                if (!Bo.AllGood) return;
+
+                var settings = ConnectionSettings.Load();
+                using (var conn = settings.CreateConnection())
+                {
+                    var exporter = new BOQDataExporter(conn);
+                    
+                    // Initialize schema (creates tables if needed)
+                    exporter.InitializeSchema();
+                    
+                    // Create project record
+                    string projectName = doc.Title ?? "Untitled Project";
+                    string projectNumber = doc.ProjectInformation?.Number ?? "";
+                    string filePath = doc.PathName ?? "";
+                    
+                    int projectId = exporter.CreateProject(projectName, projectNumber, filePath, null);
+                    
+                    // Export each item
+                    foreach (var item in Sorted)
+                    {
+                        // Extract family and type from the Name (format: "FamilyName : TypeName")
+                        string familyName = "";
+                        string typeName = item.Name ?? "";
+                        if (typeName.Contains(":"))
+                        {
+                            var parts = typeName.Split(':');
+                            familyName = parts[0].Trim();
+                            typeName = parts.Length > 1 ? parts[1].Trim() : "";
+                        }
+
+                        var boqItem = new BOQItem
+                        {
+                            ElementId = (int)(item.Type?.Id?.Value ?? 0),
+                            Category = item.Type?.Category?.Name ?? "",
+                            FamilyName = familyName,
+                            TypeName = typeName,
+                            Level = string.Join(", ", selectedLevels),
+                            CSIDivision = item.Division?.Section ?? "",
+                            CSIDescription = item.Section?.Name ?? "",
+                            Quantity = (decimal)item.Quantity,
+                            Unit = item.UnitType.ToString(),
+                            Area = (decimal)item.Area,
+                            Volume = (decimal)item.Volume,
+                            Length = (decimal)item.Length,
+                            Count = (int)item.Count,
+                            Remarks = item.Description ?? ""
+                        };
+                        
+                        exporter.InsertItem(projectId, boqItem);
+                    }
+                    
+                    MessageBox.Show($"Successfully exported {Sorted.Count} items to SQL Server!\n\nProject ID: {projectId}", 
+                        "SQL Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"SQL Export failed:\n\n{ex.Message}", 
+                    "Export Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

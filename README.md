@@ -41,7 +41,7 @@
 #### Step 2: Clone or Download the Project
 
 ```bash
-git clone https://github.com/your-repo/GenQ-master.git
+git clone https://github.com/Abdul-k-s/GenQ.git
 ```
 
 Or download and extract the ZIP file.
