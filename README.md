@@ -1,8 +1,20 @@
-# GenQ - Bill of Quantities Generator for Revit 2025
+##  GenQ – Revit BOQ Automation Tool
 
-**GenQ** is a Revit add-in that generates Bill of Quantities (BOQ) from Revit models. It allows users to select elements by category and level, assign CSI MasterFormat 2018 divisions, specify unit types (area, length, volume, perimeter, count), add costs, and export the BOQ to Excel format.
+GenQ is a Revit add-in that automates Bill of Quantities (BOQ) extraction directly from models, reducing manual work and improving accuracy.
 
----
+###  Key Features
+- Extract quantities from multiple categories
+- Handle linked models
+- Export to Excel (EPPlus)
+- Tree-based element selection UI
+
+###  Demo
+(Add GIF or video here)
+
+###  Use Cases
+- Quantity Surveying
+- Tender preparation
+- Cost estimation workflows
 
 ## 🔧 System Requirements
 
