@@ -9,40 +9,25 @@ GenQ is a Revit add-in that automates Bill of Quantities (BOQ) extraction direct
 - Tree-based element selection UI
 
 ###  Demo
-(Add GIF or video here)
+[![Watch the demo](https://img.youtube.com/vi/0UPMaIKpWcA/0.jpg)](https://www.youtube.com/watch?v=0UPMaIKpWcA)
+<img width="1024" height="791" alt="1" src="https://github.com/user-attachments/assets/b26cf5d6-1cbd-42a5-b10f-78cd83ddd80c" />
+<img width="1024" height="791" alt="2" src="https://github.com/user-attachments/assets/3fed3545-f5b2-4ed6-abbc-eafb807f1e43" />
+<img width="1024" height="791" alt="3" src="https://github.com/user-attachments/assets/d39fc6ad-72c7-4cc8-acf0-531d905751e1" />
+<img width="966" height="640" alt="4" src="https://github.com/user-attachments/assets/eb9698cc-4d2b-49c7-8138-b179fc26b3ed" />
+
 
 ###  Use Cases
 - Quantity Surveying
 - Tender preparation
 - Cost estimation workflows
 
-## 🔧 System Requirements
-
-### For Building (Development)
-- **Windows 10/11** (64-bit)
-- **Visual Studio 2022** (v17.8 or later recommended)
-  - Workloads: ".NET Desktop Development"
-- **.NET 8.0 SDK** (included with VS 2022 17.8+)
-- **Autodesk Revit 2025** (for API references)
-
-### For Running (End Users)
-- **Windows 10/11** (64-bit)
-- **Autodesk Revit 2025**
-- **.NET 8.0 Desktop Runtime** (usually included with Revit 2025)
-
 ---
 
-## 📦 Installation Instructions
+##  Installation Instructions
 
 ### Option 1: Build from Source (Developers)
 
 #### Step 1: Install Prerequisites
-
-1. **Install Visual Studio 2022**
-   - Download from: https://visualstudio.microsoft.com/
-   - During installation, select:
-     - ✅ ".NET Desktop Development" workload
-     - ✅ ".NET 8.0 Runtime" (individual component)
 
 2. **Install Autodesk Revit 2025**
    - Ensure Revit 2025 is installed at the default location:
@@ -58,12 +43,7 @@ git clone https://github.com/Abdul-k-s/GenQ.git
 
 Or download and extract the ZIP file.
 
-#### Step 3: Open in Visual Studio
-
-1. Open `GenQ.sln` in Visual Studio 2022
-2. Wait for NuGet packages to restore automatically
-
-#### Step 4: Build the Project
+#### Step 3: Build the Project
 
 1. Select **Release** configuration (or Debug for testing)
 2. Select **x64** platform
@@ -74,7 +54,7 @@ The build process will automatically:
 - Copy files to: `%AppData%\Autodesk\Revit\Addins\2025\GenQ\`
 - Copy the `.addin` manifest to: `%AppData%\Autodesk\Revit\Addins\2025\`
 
-#### Step 5: Start Revit
+#### Step 4: Start Revit
 
 1. Launch Revit 2025
 2. Look for the **"ITI - GenQ"** tab in the ribbon
@@ -137,11 +117,11 @@ Your folder structure should look like:
 
 1. Launch Revit 2025
 2. If prompted about loading the add-in, select **"Always Load"**
-3. Find the **"ITI - GenQ"** tab in the ribbon
+3. Find the **"GenQ"** tab in the ribbon
 
 ---
 
-## 🚀 Usage Guide
+##  Usage Guide
 
 ### Basic Workflow
 
@@ -236,7 +216,7 @@ EPPlus 5+ requires a license context. GenQ uses NonCommercial mode:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 GenQ-master/
@@ -258,38 +238,9 @@ GenQ-master/
     └── Resources/                    # Icons
         ├── GenQ.png
         └── GenQLogo.ico
-```
-
 ---
 
-## ⚠️ Files to Delete (IMPORTANT - Legacy Files)
-
-**Before building**, delete these obsolete files that cause conflicts:
-
-| File | Location | Why Delete |
-|------|----------|------------|
-| `packages.config` | `TreeViewWithCheckBoxes/` | Old NuGet format - conflicts with PackageReference |
-| `app.config` | `TreeViewWithCheckBoxes/` | Old .NET Framework 4.8 config - not needed for .NET 8 |
-| `Levels.cs` | Root folder | Orphan empty class file |
-
-**To delete:**
-1. Open File Explorer
-2. Navigate to `GenQ-master/TreeViewWithCheckBoxes/`
-3. Delete `packages.config` and `app.config`
-4. Navigate to `GenQ-master/`
-5. Delete `Levels.cs`
-
-Or in PowerShell:
-```powershell
-cd path\to\GenQ-master
-Remove-Item "TreeViewWithCheckBoxes\packages.config" -ErrorAction SilentlyContinue
-Remove-Item "TreeViewWithCheckBoxes\app.config" -ErrorAction SilentlyContinue
-Remove-Item "Levels.cs" -ErrorAction SilentlyContinue
-```
-
----
-
-## 📝 Version History
+##  Version History
 
 ### v2.0.0 (Revit 2025)
 - **Upgraded to .NET 8.0** for Revit 2025 compatibility
@@ -309,27 +260,11 @@ Remove-Item "Levels.cs" -ErrorAction SilentlyContinue
 
 ---
 
-## 📄 License
-
-See [LICENSE.txt](LICENSE.txt) for license information.
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test with Revit 2025
-5. Submit a pull request
-
----
-
-## 📧 Support
+##  Support
 
 For issues and questions:
 - Open an issue on GitHub
-- Contact: [Your contact information]
+- Contact: [abdul.khaled.sultan@gmail.com]
 
 ---
 
